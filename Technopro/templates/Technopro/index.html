@@ -1,10 +1,20 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
         <title>テスト</title>
+        {% if reload %}
+        <script src="{% static 'reload.js' %}"></script>
+        {% endif %}
     </head>
     <body>
-        <p>Hello World!!</p>
+        <form action="{% url 'index' %}" method="POST" class="form-inline">
+            {% csrf_token %}
+            {% if not reload %}
+            <input type="submit" value="スコア取得">
+            {% endif %}
+        </form>
+        <p>{{ msg }}</p>
     </body>
 </html>

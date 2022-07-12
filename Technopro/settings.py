@@ -36,6 +36,8 @@ if not DEBUG :
 # Application definition
 
 INSTALLED_APPS = [
+    'bs4',
+    'selenium',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -129,3 +131,63 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+
+# 投稿ファイル名(基準ファイル)
+# ※ このプログラムを最初に動かす前に、予めこのファイルを投稿しておいてください
+# ※ このプログラムで最終的にスコアが改善した場合、このファイルの内容が書き換わります
+SUBMISSION_FILE = "submission.csv"
+
+# 探索ウェイポイントリストファイル名
+WPLIST_FILE = "wplist.txt"
+
+# 各種ファイルアップロードディレクトリパス
+DIR = STATIC_ROOT
+
+# SIGNATEの投稿結果スコア一覧URL
+URL = "https://signate.jp/competitions/102/submissions"
+
+# SIGNATEのアカウント情報
+EMAIL = "il.piccola.estate@gmail.com"
+PASSWORD = "5qpdc4f6"
+
+# SIGNATEのコンペID
+COMPETITION_ID = 102
+
+# 基準の緯度経度
+NE_A = [37.5, 125.0]
+NE_B = [32.5, 125.0]
+NE_C = [40.0, 147.0]
+NE_D = [32.5, 145.0]
+
+# -------------------------------------------------------
+
+# 作業ディレクトリパス
+WORKDIR = os.path.join(DIR, "work")
+os.makedirs(WORKDIR, exist_ok=True)
+
+# 投稿ファイル行対応ウェイポイントファイル名
+WAYPOINT_FILE = "waypoint.csv"
+
+# 作業進捗ファイル名
+PROGRESS_FILE = "progress.txt"
+
+# ベストスコアファイル名
+BESTSCORE_FILE = "bestscore.txt"
+
+# 探索完了ウェイポイントファイル名
+WPLISTFIN_FILE = "wplist_fin.txt"
+
+# 角度データファイル名
+ANGLE_FILE_A = "dd2angle_A01_10.csv"
+ANGLE_FILE_B = "dd2angle_B_08.csv"
+ANGLE_FILE_C = "dd2angle_C_M08.csv"
+ANGLE_FILE_D = "dd2angle_D_M10.csv"
+
+# SIGNATEスコア取得コマンド名
+SIGNATE_PY = "signate.py"
+
+# プロセス起動判定ファイル名
+PROCESS_FILE = "process.txt"
