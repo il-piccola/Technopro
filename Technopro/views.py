@@ -47,8 +47,7 @@ def getProgress() :
     if os.path.exists(progress_path) :
         with open(progress_path) as f :
             s = f.read()
-            if s.isnumeric() :
-                ret = int(s) * 10
+            ret = int(convertFloat(s)*10)
     return ret
 
 def convertFloat(s):
