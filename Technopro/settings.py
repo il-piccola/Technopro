@@ -189,6 +189,8 @@ ANGLE_FILE_D = "dd2angle_D_M10.csv"
 # SIGNATEスコア取得コマンド名
 SIGNATE_PY = os.path.join(Path(__file__).resolve().parent, "signate.py")
 SIGNATE_COM = "python " + SIGNATE_PY
+if not DEBUG :
+    SIGNATE_COM = "/home/ec2-user/.pyenv/shims/python " + SIGNATE_PY
 
 # プロセス起動判定ファイル名
 PROCESS_FILE = "process.txt"

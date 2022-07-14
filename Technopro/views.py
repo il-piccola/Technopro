@@ -1,7 +1,5 @@
 import os
-from pathlib import Path
-import subprocess
-from subprocess import PIPE
+from subprocess import Popen, PIPE
 from django.shortcuts import render
 from django.views.decorators.clickjacking import xframe_options_exempt
 from .settings import *
@@ -25,7 +23,7 @@ def execSignate() :
     score = -1
     process_path = os.path.join(WORKDIR, PROCESS_FILE)
     if not os.path.exists(process_path) :
-        proc = subprocess.Popen(SIGNATE_COM, shell=True, stdout=PIPE, stderr=PIPE, text=True)
+        proc = Popen(SIGNATE_COM, shell=True, stdout=PIPE, stderr=PIPE, text=True)
         with open(process_path, mode='w') as f :
             f.write(SIGNATE_COM)
         return score
