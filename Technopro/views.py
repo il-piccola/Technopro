@@ -8,15 +8,20 @@ from .forms import *
 def index(request) :
     params = {
         'msg' : 'ボタン押下でスコアを取得します',
-        'reload' : False
+        'reload' : False,
+        'progress' : 0,
+        'anime' : 'progress-bar-animated'
     }
     if request.POST :
         params['msg'] = 'スコア取得中です、お待ちください'
         params['reload'] = True
+        params['progress'] = getProgress()
         score = execSignate()
         if score > 0 :
             params['msg'] = 'スコアは' + str(score) + 'です'
             params['reload'] = False
+            params['progress'] = 100
+            params['anime'] = 'progress-bar-striped'
     return render(request, 'Technopro/index.html', params)
 
 def execSignate() :
@@ -35,6 +40,16 @@ def execSignate() :
         os.remove(bestscore_path)
         os.remove(process_path)
     return score
+
+def getProgress() :
+    ret = 0
+    progress_path = os.path.join(WORKDIR, PROGRESS_FILE)
+    if os.path.exists(progress_path) :
+        with open(progress_path) as f :
+            s = f.read()
+            if s.isnumeric() :
+                ret = int(s) * 10
+    return ret
 
 def convertFloat(s):
     ret = -1
