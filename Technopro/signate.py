@@ -15,6 +15,7 @@ def getSignateScore() :
         progress = progress + 1
         writeProgress(progress)
     score = 100.00
+    os.remove(os.path.join(WORKDIR, PROGRESS_FILE))
     return score
 
 def writeProgress(n) :
