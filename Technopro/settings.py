@@ -187,7 +187,8 @@ ANGLE_FILE_C = "dd2angle_C_M08.csv"
 ANGLE_FILE_D = "dd2angle_D_M10.csv"
 
 # SIGNATEスコア取得コマンド名
-SIGNATE_PY = "signate.py"
+SIGNATE_PY = os.path.join(Path(__file__).resolve().parent, "signate.py")
+SIGNATE_COM = "python " + SIGNATE_PY
 
 # プロセス起動判定ファイル名
 PROCESS_FILE = "process.txt"
