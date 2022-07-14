@@ -13,8 +13,13 @@
     <body>
         <form action="{% url 'index' %}" method="POST" class="form-inline">
             {% csrf_token %}
-            {% if not reload %}
-            <input type="submit" value="スコア取得">
+            {% if reload %}
+            <button type="submit" class="btn btn-primary btn-sm" disabled>
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                スコア取得
+            </button>
+            {% else %}
+            <button type="submit" class="btn btn-primary btn-sm">スコア取得</button>
             {% endif %}
         </form>
         <p>{{ msg }}</p>
