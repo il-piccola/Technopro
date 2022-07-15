@@ -8,24 +8,78 @@
         {% if reload %}
         <script src="{% static 'reload.js' %}"></script>
         {% endif %}
+        <link rel="stylesheet" href="{% static 'common.css' %}">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     </head>
     <body>
+        <header>
+            <h1>Technopro</h1>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </header>
         <form action="{% url 'index' %}" method="POST" class="form-inline">
-            {% csrf_token %}
-            {% if reload %}
-            <button type="submit" class="btn btn-primary btn-sm" disabled>
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                スコア取得
-            </button>
-            {% else %}
-            <button type="submit" class="btn btn-primary btn-sm">スコア取得</button>
-            {% endif %}
+        {% csrf_token %}
+        <main class="flex-box">
+            <aside class="flex-child-aside">
+                <div class="line"></div>
+                【説明】<br>
+                <ol>
+                    <li>初回のみ、最新のSIGNATE投稿ファイルをアップロードします</li>
+                    <li>座標を求めたいウェイポイントの名称をリストから選択します</li>
+                    <li>実行ボタンを押下します</li>
+                    <li>座標を求める処理が実行されます</li>
+                    <li>処理が完了したら座標が表示されます</li>
+                </ol>
+            </aside>
+            <section class="flex-child-section">
+                <h2 class="blue">座標取得</h2>
+                <span>{{ msg }}</span><br>
+                {% if reload %}
+                <button type="submit" class="btn btn-primary btn-sm" disabled>
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    スコア取得
+                </button>
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped {{ anime }}" role="progressbar" style="width: {{ progress }}%" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
+                </div>
+                {% else %}
+                <button type="submit" class="btn btn-primary btn-sm">スコア取得</button>
+                {% endif %}
+            </section>
+            <section class="flex-child-section">
+                <h2 class="yellow">取得結果リスト</h2>
+                <ul>
+                    <li>
+                        SUGAR
+                        <ul class="yoko">
+                            <li>34.56N</li>
+                            <li>135.25E</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+        </main>
+        {% comment %} <article>
+            <h1>タイトル</h1>
+            <p>テキスト</p>
+            <div class="menu">
+                <ul>
+                    <li><a href="#">PREV</a></li>
+                    <li><a href="#">INDEX</a></li>
+                    <li><a href="#">NEXT</a></li>
+                </ul>
+            </div>
+        </article> {% endcomment %}
         </form>
-        <p>{{ msg }}</p>
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped {{ anime }}" role="progressbar" style="width: {{ progress }}%" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
-        </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+        <footer>[Template] <a href="https://ninawas.me" target="_blank">NINA</a></footer>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     </body>
 </html>

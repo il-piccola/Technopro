@@ -1,0 +1,335 @@
+<style>
+    @charset "UTF-8";
+    
+    /* Template & Designed by Towako. */
+    /* https://ninawas.me */
+    
+    /* ウェブフォントの読み込み */
+    @import url('https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300&family=Montserrat:wght@900&family=Noto+Sans+JP&display=swap');
+    
+    @font-face {
+        font-family: '鉄瓶ゴシック';
+        font-display: swap;
+        src: url('https://cdn.leafscape.be/tetsubin/tetsubin_web.woff2') format("woff2");
+    }
+    
+    /* 全体に適用する */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Kiwi Maru', serif;
+    }
+    
+    /* 基本設定 */
+    body {
+        background: repeating-linear-gradient(90deg, #fff 0, #fff 18px, #87deeb 18px, #87deeb 23px);
+        line-height: 1.7;
+        letter-spacing: 0.1em;
+        font-size: 13px;
+        color: #000;
+    }
+    
+    /* リンク */
+    a {
+        text-decoration: none;
+        color: #888;
+    }
+    
+    /* ヘッダー */
+    header {
+        margin: 3em auto 0 1.5em;
+        padding: 0.5em 1.5em;
+        position: relative;
+        display: inline-block;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 0 10px #87deeb;
+    }
+    
+    /* 大見出し */
+    header h1 {
+        letter-spacing: 0;
+        -webkit-text-stroke: 1px #000;
+        text-shadow: 4px 3px 0 #87deeb;
+        font-family: 'Montserrat', '鉄瓶ゴシック', 'Noto Sans JP', sans-serif;
+        font-size: 2.8em;
+        color: transparent;
+    }
+    
+    /* 泡 */
+    header > div {
+        position: absolute;
+        top: 75%;
+        width: 10px;
+        height: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+        border-radius: 50%;
+        animation: awa 1s ease-in-out infinite;
+    }
+    
+    header div:nth-of-type(1) {
+        left: 2%;
+        width: 8px;
+        height: 8px;
+        animation-duration: 3s;
+    }
+    
+    header div:nth-of-type(2) {
+        background-color: rgba(255, 255, 255, 0.4);
+        left: 10%;
+        animation-duration: 5s;
+    }
+    
+    header div:nth-of-type(3) {
+        left: 23%;
+        width: 13px;
+        height: 13px;
+        animation-duration: 6s;
+    }
+    
+    header div:nth-of-type(4) {
+        background-color: rgba(255, 255, 255, 0.3);
+        left: 30%;
+        animation-duration: 2.3s;
+    }
+    
+    header div:nth-of-type(5) {
+        left: 43%;
+        width: 5px;
+        height: 5px;
+        animation-duration: 7s;
+    }
+    
+    header div:nth-of-type(6) {
+        background-color: rgba(255, 255, 255, 0.5);
+        left: 55%;
+        animation-duration: 5s;
+    }
+    
+    header div:nth-of-type(7) {
+        left: 63%;
+        width: 8px;
+        height: 8px;
+        animation-duration: 4s;
+    }
+    
+    header div:nth-of-type(8) {
+        left: 75%;
+        width: 12px;
+        height: 12px;
+        animation-duration: 2.5s;
+    }
+    
+    header div:nth-of-type(9) {
+        background-color: rgba(255, 255, 255, 0.4);
+        left: 85%;
+        animation-duration: 6s;
+    }
+    
+    header div:nth-of-type(10) {
+        background-color: rgba(255, 255, 255, 0.3);
+        left: 95%;
+        width: 8px;
+        height: 8px;
+        animation-duration: 2.3s;
+    }
+    
+    /* メインコンテンツ */
+    main {
+        margin: -40px auto 3em;
+        padding: 1.5em;
+        width: 80%;
+        background-color: #fff;
+        border-radius: 15px;
+        box-shadow: 0 0 10px #87deeb;
+    }
+
+    .flex-box {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+    
+    /* ライン */
+    div.line {
+        margin-left: auto;
+        height: 20px;
+        background: repeating-linear-gradient(110deg, #fff 0, #fff 5px, #87deeb 5px, #87deeb 10px);
+    }
+    
+    /* 補足情報 */
+    aside {
+        margin: 1em auto;
+    }
+
+    .flex-child-aside {
+        flex: 1;
+        padding:  10px;
+    }
+    
+    /* テキスト処理 */
+    aside span,
+    article p {
+        text-align: justify;
+        word-break: break-all;
+    }
+    
+    aside span {
+        border-bottom: thin dotted #efefef;
+    }
+    
+    /* セクション */
+    section {
+        margin: 1.5em auto;
+    }
+
+    .flex-child-section:nth-child(1) {
+        flex: 2;
+        padding:  10px;
+    }
+
+    .flex-child-section:nth-child(2) {
+        flex: 3;
+        padding:  10px;
+    }
+    
+    /* 小見出し */
+    section h2 {
+        font-family: 'Montserrat', '鉄瓶ゴシック', 'Noto Sans JP', sans-serif;
+    }
+    
+    section h2.blue {
+        background: linear-gradient(90deg, #87deeb, #fff462);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    section h2.yellow {
+        background: linear-gradient(90deg, #fff462, #e4007f);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    /* リスト系 */
+    section ul,
+    section ol {
+        margin-bottom: 0.5em;
+        list-style-type: none;
+    }
+    
+    section ol {
+        counter-reset: item;
+    }
+    
+    section ol li::before {
+        content: '';
+        display: inline-block;
+        counter-increment: item;
+        content: counter(item) '';
+        margin-right: 0.5em;
+        width: 20px;
+        background-color: #efffff;
+        border-radius: 15px;
+        text-align: center;
+        font-family: 'Montserrat', '鉄瓶ゴシック', 'Noto Sans JP', sans-serif;
+        color: #87deeb;
+    }
+    
+    section ol li {
+        margin-bottom: 0.5em;
+    }
+    
+    section .yoko li {
+        display: inline;
+    }
+    
+    /* フッター */
+    footer {
+        text-align: right;
+        margin: 0.5em auto 1em;
+    }
+    
+    footer,
+    footer a {
+        font-family: '鉄瓶ゴシック', 'Noto Sans JP', sans-serif;
+    }
+    
+    footer a {
+        color: #e4007f;
+    }
+    
+    /* アーティクル */
+    article {
+        margin: 3em auto;
+        padding: 3em;
+        background-color: #fff;
+    }
+    
+    article h1 {
+        margin-bottom: 1em;
+        text-align: center;
+        color: #888;
+    }
+    
+    article p {
+        margin: 0 auto;
+        max-width: 600px;
+        font-family: 'Noto Sans JP', sans-serif;
+    }
+    
+    /* メニュー */
+    .menu {
+        text-align: center;
+        margin: 1em auto 1.5em;
+    }
+    
+    .menu li {
+        display: inline-block;
+        margin: 0 0.5em;
+    }
+    
+    .menu li a {
+        font-weight: bold;
+    }
+    
+    /* アニメーション */
+    @keyframes awa {
+        0% {
+            bottom: 0;
+        }
+    
+        100% {
+            top: 0;
+        }
+    }
+    
+    /* 横幅768px以上で読み込む */
+    @media screen and (min-width:768px) {
+    
+        /* フォントサイズ */
+        body {
+            font-size: 14px;
+        }
+    
+        /* メインコンテンツ */
+        main {
+            width: 88%
+        }
+    }
+    
+    /* 横幅1024px以上で読み込む */
+    @media screen and (min-width:1024px) {
+    
+        /* フォントサイズ */
+        body {
+            font-size: 15px;
+        }
+    
+        /* メインコンテンツ */
+        main {
+            width: 93%;
+        }
+    }
+</style>
