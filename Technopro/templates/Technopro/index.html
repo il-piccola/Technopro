@@ -35,8 +35,8 @@
                     <li>初回のみ、最新のSIGNATE投稿ファイルをアップロードします</li>
                     <li>座標を求めたいウェイポイントの名称をリストから選択します</li>
                     <li>実行ボタンを押下します</li>
-                    <li>座標を求める処理が実行されます</li>
-                    <li>処理が完了したら座標が表示されます</li>
+                    <li>座標を計算する処理が実行されます</li>
+                    <li>計算処理が完了したら座標が表示されます</li>
                 </ol>
             </aside>
             <section class="flex-child-section">
@@ -45,13 +45,14 @@
                 {% if reload %}
                 <button type="submit" class="btn btn-primary btn-sm" disabled>
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    スコア取得
+                    座標計算
                 </button>
                 <div class="progress">
                     <div class="progress-bar progress-bar-striped {{ anime }}" role="progressbar" style="width: {{ progress }}%" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
                 </div>
                 {% else %}
-                <button type="submit" class="btn btn-primary btn-sm">スコア取得</button>
+                {{ form.waypoint }}
+                <button type="submit" class="btn btn-primary btn-sm">座標計算</button>
                 {% endif %}
             </section>
             <section class="flex-child-section">
