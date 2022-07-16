@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.clickjacking import xframe_options_exempt
 from .settings import *
 from .forms import *
+from .progress import *
 
 def getParams() :
     return {
@@ -19,80 +20,91 @@ def upload(request) :
     params = getParams()
     params['msg'] = '最新のSIGNATE投稿ファイルをアップロードしてください'
     if request.POST :
-        ext = os.path.splitext(request.FILES['file'].name)[1][1:].lower()
-        if ext == 'csv' :
-            submission_path = os.path.join(WORKDIR, SUBMISSION_FILE)
-            with open(submission_path, 'wb') as f:
-                f.write(request.FILES['file'].read())
-            return redirect('index')
-        else :
-            params['msg'] = 'アップロードできるファイルはCSVだけです'
+        submission_path = os.path.join(WORKDIR, SUBMISSION_FILE)
+        with open(submission_path, 'wb') as f:
+            f.write(request.FILES['file'].read())
+        return redirect('index')
     return render(request, 'Technopro/index.html', params)
 
 def index(request) :
-    if not isExistsSubmission() :
+    submission_path = os.path.join(WORKDIR, SUBMISSION_FILE)
+    if not os.path.exists(submission_path) :
         return redirect('upload')
     params = getParams()
-    params['indexform'] = indexForm()
-    if request.POST :
-        indexform = indexForm(data=request.POST)
-        if indexform.is_valid() :
-            waypoint = indexform.cleaned_data['waypoint']
-            params['msg'] = '座標計算中です、お待ちください'
-            params['reload'] = True
-            params['progress'] = getProgress(waypoint)
-            score = execSignate()
-            if score > 0 :
-                params['msg'] = 'スコアは' + str(score) + 'です'
-                params['reload'] = False
-                params['progress'] = 100
-                params['anime'] = 'progress-bar-striped'
-        params['indexform'] = indexform
+    progress = getProgress()
+    name = getProgressName()
+    if progress >= 100 :
+        params['msg'] = '【' + name + '】の座標計算処理が完了しました'
+        params['anime'] = 'progress-bar-striped'
+        params['result'] = getWaypointFin(name=name)
+        deleteProgress()
+        if request.POST :
+            params['indexform'] = indexForm(data=request.POST)
+        else :
+            params['indexform'] = indexForm()
+    elif progress > 0 :
+        params['msg'] = '【' + name + '】の座標を計算中です、しばらくお待ちください'
+        params['reload'] = True
+        if request.POST :
+            params['indexform'] = indexForm(data=request.POST)
+        else :
+            params['indexform'] = indexForm()
+    else :
+        if request.POST :
+            indexform = indexForm(data=request.POST)
+            if indexform.is_valid() :
+                waypoint = int(indexform.cleaned_data['waypoint'])
+                ret = execSignate(waypoint)
+                name = getWaypointName(waypoint)
+                if not ret :
+                    params['msg'] = '【' + name + '】の座標計算処理は完了しています'
+                    params['anime'] = 'progress-bar-striped'
+                    params['result'] = getWaypointFin(name=name)
+                    deleteProgress()
+                else :
+                    params['msg'] = '【' + name + '】の座標を計算中です、しばらくお待ちください'
+                    params['reload'] = True
+            params['indexform'] = indexform
+        else :
+            params['msg'] = 'ボタン押下で座標計算およびSIGNATEスコアを取得します'
+            params['indexform'] = indexForm()
+    params['progress'] = progress
     return render(request, 'Technopro/index.html', params)
 
 def execSignate(waypoint) :
-    score = -1
-    process_path = os.path.join(WORKDIR, PROCESS_FILE)
-    if not os.path.exists(process_path) :
+    if len(getWaypointFin(index=waypoint)) > 0 :
+        return False
+    if getProgress() <= 0 :
+        name = getWaypointName(waypoint)
+        print(name)
+        writeProgress(1, name=name)
         proc = Popen(SIGNATE_COM, shell=True, stdout=PIPE, stderr=PIPE, text=True)
-        with open(process_path, mode='w') as f :
-            f.write(SIGNATE_COM)
-        return score
-    bestscore_path = os.path.join(WORKDIR, BESTSCORE_FILE)
-    if os.path.exists(bestscore_path) :
-        with open(bestscore_path) as f :
-            s = f.read()
-            score = convertFloat(s)
-        os.remove(bestscore_path)
-        os.remove(process_path)
-    return score
-
-def getProgress() :
-    ret = 0
-    progress_path = os.path.join(WORKDIR, PROGRESS_FILE)
-    if os.path.exists(progress_path) :
-        with open(progress_path) as f :
-            s = f.read()
-            ret = int(convertFloat(s)*10)
-    return ret
-
-def isExistsSubmission() :
-    submission_path = os.path.join(WORKDIR, SUBMISSION_FILE)
-    ret = os.path.exists(submission_path)
-    return ret
+    return True
 
 def getFinList() :
     ret = pd.DataFrame()
     wplistfin_path = os.path.join(WORKDIR, WPLISTFIN_FILE)
     if os.path.exists(wplistfin_path) :
-        ret = pd.read_csv(wplistfin_path, header=None)
+        ret = pd.read_csv(wplistfin_path, names=('name', 'score', 'n', 'e'))
     return ret
 
-def convertFloat(s):
-    ret = -1
-    try:
-        ret = float(s)
-    except ValueError :
-        return ret
-    else :
-        return ret
+def getWaypointFin(index=-1, name='') :
+    ret = []
+    df = getFinList()
+    if len(name) > 0 :
+        ret = df[df['name']==name].values.tolist()
+        if len(ret) > 0 :
+            ret = ret[0]
+    elif index >= 0 :
+        ret = df[df['name']==getWaypointName(index)].values.tolist()
+        if len(ret) > 0 :
+            ret = ret[0]
+    return ret
+
+def getWaypointName(waypoint) :
+    ret = ''
+    waypoint_path = os.path.join(WORKDIR, WAYPOINT_FILE)
+    if os.path.exists(waypoint_path) :
+        df = pd.read_csv(waypoint_path, names=('index', 'name'))
+        ret = df[df['index']==waypoint].iat[0, 1]
+    return ret

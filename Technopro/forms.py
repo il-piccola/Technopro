@@ -6,7 +6,7 @@ from .settings import *
 def getWaypointList() :
     ret = []
     waypoint_path = os.path.join(WORKDIR, WAYPOINT_FILE)
-    f = open(waypoint_path, encoding='utf_8')
+    f = open(waypoint_path, encoding='utf-8-sig')
     list = csv.reader(f)
     for row in list :
         ret.append((row[0], row[1]))
