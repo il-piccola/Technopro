@@ -43,8 +43,14 @@
                 {% if not indexform %}
                 <form action="{% url 'upload' %}" method="POST" class="form-inline" enctype="multipart/form-data">
                 {% csrf_token %}
-                {{ uploadform }}<br>
+                <div class="row">
+                <div class="col-auto">
+                <input type="file" name="file" accept="text/csv" class="form-control" required>
+                </div>
+                <div class="col-auto">
                 <button type="submit" name="btn_upload" class="btn btn-primary btn-sm">アップロード</button>
+                </div>
+                </div>
                 </form>
                 {% else %}
                 <form action="{% url 'index' %}" method="POST" class="form-inline">

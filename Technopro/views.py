@@ -18,14 +18,15 @@ def getParams() :
 def upload(request) :
     params = getParams()
     params['msg'] = '最新のSIGNATE投稿ファイルをアップロードしてください'
-    params['uploadform'] = uploadForm()
     if request.POST :
-        uploadform = uploadForm(request.POST, request.FILES)
-        if uploadform.is_valid() :
+        ext = os.path.splitext(request.FILES['file'].name)[1][1:].lower()
+        if ext == 'csv' :
             submission_path = os.path.join(WORKDIR, SUBMISSION_FILE)
             with open(submission_path, 'wb') as f:
                 f.write(request.FILES['file'].read())
-        return redirect('index')
+            return redirect('index')
+        else :
+            params['msg'] = 'アップロードできるファイルはCSVだけです'
     return render(request, 'Technopro/index.html', params)
 
 def index(request) :
@@ -77,9 +78,7 @@ def getProgress() :
 
 def isExistsSubmission() :
     submission_path = os.path.join(WORKDIR, SUBMISSION_FILE)
-    print(submission_path)
     ret = os.path.exists(submission_path)
-    print(ret)
     return ret
 
 def getFinList() :
