@@ -178,7 +178,7 @@ PROGRESS_FILE = "progress.txt"
 BESTSCORE_FILE = "bestscore.txt"
 
 # 探索完了ウェイポイントファイル名
-WPLISTFIN_FILE = "wplist_fin.txt"
+WPLISTFIN_FILE = "wplist_fin.csv"
 
 # 角度データファイル名
 ANGLE_FILE_A = "dd2angle_A01_10.csv"

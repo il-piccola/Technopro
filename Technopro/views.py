@@ -1,4 +1,5 @@
 import os
+import pandas as pd
 from subprocess import Popen, PIPE
 from django.shortcuts import render
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -8,15 +9,16 @@ from .forms import *
 def index(request) :
     params = {
         'msg' : 'ボタン押下で座標計算およびSIGNATEスコアを取得します',
-        'form' : indexForm(),
+        'indexform' : indexForm(),
         'reload' : False,
         'progress' : 0,
-        'anime' : 'progress-bar-animated'
+        'anime' : 'progress-bar-animated',
+        'wplistfin' : getFinList()
     }
     if request.POST :
-        form = indexForm(data=request.POST)
-        if form.is_valid() :
-            waypoint = form.cleaned_data['waypoint']
+        indexform = indexForm(data=request.POST)
+        if indexform.is_valid() :
+            waypoint = indexform.cleaned_data['waypoint']
             params['msg'] = '座標計算中です、お待ちください'
             params['reload'] = True
             params['progress'] = getProgress(waypoint)
@@ -52,6 +54,13 @@ def getProgress() :
         with open(progress_path) as f :
             s = f.read()
             ret = int(convertFloat(s)*10)
+    return ret
+
+def getFinList() :
+    ret = pd.DataFrame()
+    wplistfin_path = os.path.join(WORKDIR, WPLISTFIN_FILE)
+    if os.path.exists(wplistfin_path) :
+        ret = pd.read_csv(wplistfin_path, header=None)
     return ret
 
 def convertFloat(s):
