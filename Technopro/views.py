@@ -1,20 +1,38 @@
 import os
 import pandas as pd
 from subprocess import Popen, PIPE
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.decorators.clickjacking import xframe_options_exempt
 from .settings import *
 from .forms import *
 
-def index(request) :
-    params = {
+def getParams() :
+    return {
         'msg' : 'ボタン押下で座標計算およびSIGNATEスコアを取得します',
-        'indexform' : indexForm(),
         'reload' : False,
         'progress' : 0,
         'anime' : 'progress-bar-animated',
         'wplistfin' : getFinList()
     }
+
+def upload(request) :
+    params = getParams()
+    params['msg'] = '最新のSIGNATE投稿ファイルをアップロードしてください'
+    params['uploadform'] = uploadForm()
+    if request.POST :
+        uploadform = uploadForm(request.POST, request.FILES)
+        if uploadform.is_valid() :
+            submission_path = os.path.join(WORKDIR, SUBMISSION_FILE)
+            with open(submission_path, 'wb') as f:
+                f.write(request.FILES['file'].read())
+        return redirect('index')
+    return render(request, 'Technopro/index.html', params)
+
+def index(request) :
+    if not isExistsSubmission() :
+        return redirect('upload')
+    params = getParams()
+    params['indexform'] = indexForm()
     if request.POST :
         indexform = indexForm(data=request.POST)
         if indexform.is_valid() :
@@ -28,6 +46,7 @@ def index(request) :
                 params['reload'] = False
                 params['progress'] = 100
                 params['anime'] = 'progress-bar-striped'
+        params['indexform'] = indexform
     return render(request, 'Technopro/index.html', params)
 
 def execSignate(waypoint) :
@@ -54,6 +73,13 @@ def getProgress() :
         with open(progress_path) as f :
             s = f.read()
             ret = int(convertFloat(s)*10)
+    return ret
+
+def isExistsSubmission() :
+    submission_path = os.path.join(WORKDIR, SUBMISSION_FILE)
+    print(submission_path)
+    ret = os.path.exists(submission_path)
+    print(ret)
     return ret
 
 def getFinList() :

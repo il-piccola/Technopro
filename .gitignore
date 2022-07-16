@@ -1,3 +1,4 @@
 db.sqlite3
 Technopro/__pycache__/
 Technopro/migrations/__pycache__/
+static/work/submission.csv

@@ -40,8 +40,18 @@
             <section class="flex-child-section">
                 <h2 class="blue">座標取得</h2>
                 <span>{{ msg }}</span><br>
-                <form action="{% url 'index' %}" name="btn_exec" method="POST" class="form-inline">
+                {% if not indexform %}
+                <form action="{% url 'upload' %}" method="POST" class="form-inline" enctype="multipart/form-data">
                 {% csrf_token %}
+                {{ uploadform }}<br>
+                <button type="submit" name="btn_upload" class="btn btn-primary btn-sm">アップロード</button>
+                </form>
+                {% else %}
+                <form action="{% url 'index' %}" method="POST" class="form-inline">
+                {% csrf_token %}
+                <div class="row g-1">
+                <div class="col-auto">{{ indexform.waypoint }}</div>
+                <div class="col-auto">
                 {% if reload %}
                 <button type="submit" class="btn btn-primary btn-sm" disabled>
                     <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -51,10 +61,12 @@
                     <div class="progress-bar progress-bar-striped {{ anime }}" role="progressbar" style="width: {{ progress }}%" aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">{{ progress }}%</div>
                 </div>
                 {% else %}
-                {{ indexform.waypoint }}
-                <button type="submit" class="btn btn-primary btn-sm">座標計算</button>
+                <button type="submit" name="btn_index" class="btn btn-primary btn-sm">座標計算</button>
                 {% endif %}
+                </div>
+                </div>
                 </form>
+                {% endif %}
             </section>
             <section class="flex-child-section">
                 <h2 class="yellow">計算結果リスト</h2>
@@ -71,17 +83,6 @@
                 </ul>
             </section>
         </main>
-        {% comment %} <article>
-            <h1>タイトル</h1>
-            <p>テキスト</p>
-            <div class="menu">
-                <ul>
-                    <li><a href="#">PREV</a></li>
-                    <li><a href="#">INDEX</a></li>
-                    <li><a href="#">NEXT</a></li>
-                </ul>
-            </div>
-        </article> {% endcomment %}
         <footer>[Template] <a href="https://ninawas.me" target="_blank">NINA</a></footer>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     </body>

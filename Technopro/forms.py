@@ -1,6 +1,10 @@
 import csv
 from django import forms
+from django.core.files.storage import default_storage
 from .settings import *
+
+class uploadForm(forms.Form) :
+    file = forms.FileField()
 
 class indexForm(forms.Form) :
     def getWaypointList() :
@@ -14,5 +18,5 @@ class indexForm(forms.Form) :
 
     waypoint = forms.ChoiceField(
         choices=getWaypointList(),
-        widget=forms.Select()
+        widget=forms.Select(attrs={'class':'form-select'})
     )
