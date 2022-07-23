@@ -30,7 +30,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 if not DEBUG :
-    ALLOWED_HOSTS = ['35.79.223.13']
+    ALLOWED_HOSTS = ['team-shiny-99-99-9299.tk']
 
 
 # Application definition
