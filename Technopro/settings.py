@@ -34,10 +34,12 @@ if not DEBUG :
     ALLOWED_HOSTS = [
         'team-shiny-99-99-9299.ml',
         '52.197.57.19',
+#        '3.113.15.179'
     ]
     CSRF_TRUSTED_ORIGINS = [
         'https://team-shiny-99-99-9299.ml',
         'https://52.197.57.19',
+#        'https://3.113.15.179/'
     ]
 
 
