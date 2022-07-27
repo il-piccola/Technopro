@@ -29,10 +29,15 @@ DEBUG = True
 # DEBUG = False
 
 ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = []
 if not DEBUG :
     ALLOWED_HOSTS = [
         'team-shiny-99-99-9299.ml',
         '52.197.57.19',
+    ]
+    CSRF_TRUSTED_ORIGINS = [
+        'https://team-shiny-99-99-9299.ml',
+        'https://52.197.57.19',
     ]
 
 
