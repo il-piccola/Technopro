@@ -74,10 +74,9 @@ def index(request) :
 def execSignate(waypoint) :
     if len(getWaypointFin(index=waypoint)) > 0 :
         return False
-    if getProgress() <= 0 :
+    if getProgress() <= 0 and getPostNum() <= 0 :
         name = getWaypointName(waypoint)
-        print(name)
-        writeProgress(1, name=name)
+        writeProgress(1, name=name, post=1, submission_file=SUBMISSION_FILE)
         proc = Popen(SIGNATE_COM, shell=True, stdout=PIPE, stderr=PIPE, text=True)
     return True
 
