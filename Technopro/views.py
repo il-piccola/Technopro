@@ -33,7 +33,8 @@ def index(request) :
     params = getParams()
     progress = getProgress()
     name = getProgressName()
-    if progress >= 100 :
+    post = getPostNum()
+    if post >= 5 and progress >= 100 :
         params['msg'] = '【' + name + '】の座標計算処理が完了しました'
         params['anime'] = 'progress-bar-striped'
         params['result'] = getWaypointFin(name=name)
@@ -42,7 +43,7 @@ def index(request) :
             params['indexform'] = indexForm(data=request.POST)
         else :
             params['indexform'] = indexForm()
-    elif progress > 0 :
+    elif post <= 5 and progress > 0 :
         params['msg'] = '【' + name + '】の座標を計算中です、しばらくお待ちください'
         params['reload'] = True
         if request.POST :
@@ -68,6 +69,7 @@ def index(request) :
         else :
             params['msg'] = 'ボタン押下で座標計算およびSIGNATEスコアを取得します'
             params['indexform'] = indexForm()
+    params['post'] = post
     params['progress'] = progress
     return render(request, 'Technopro/index.html', params)
 
@@ -78,6 +80,9 @@ def execSignate(waypoint) :
         name = getWaypointName(waypoint)
         writeProgress(1, name=name, post=1, submission_file=SUBMISSION_FILE)
         proc = Popen(SIGNATE_COM, shell=True, stdout=PIPE, stderr=PIPE, text=True)
+        print(SIGNATE_COM, proc)
+        if not proc :
+            return False
     return True
 
 def getFinList() :

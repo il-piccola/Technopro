@@ -1,3 +1,3 @@
 window.addEventListener('load',function(){
-    setInterval('location.reload()', 1000);
+    setInterval('location.reload()', 10000);
   });

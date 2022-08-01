@@ -1,5 +1,7 @@
 import os
+import datetime
 import shutil
+from decimal import Decimal
 from settings import *
 
 progress_path = os.path.join(WORKDIR, PROGRESS_FILE)
@@ -14,7 +16,7 @@ def getProgressName() :
 
 # 進捗状況取得
 def getProgress() :
-    ret = ''
+    ret = 0
     l = readProgress()
     if len(l) >= 2 :
         ret = float(l[1])
@@ -56,14 +58,17 @@ def writeProgress(n, name='', post=0, submission_file='', score=0) :
     else :
         if name != '' :
             l[0] = name
-        l[1] = str(n)
+        l[1] = str(Decimal(str(n)).quantize(Decimal('.01')))
         if post > 0 :
             l[2] = str(post)
         if submission_file != '' :
-            if len(l[3]) <= 0 :
-                l[3] = submission_file
+            if len(l) > 3 :
+                if len(l[3]) <= 0 :
+                    l[3] = submission_file
+                else :
+                    l[3] = l[3] + ',' + submission_file
             else :
-                l[3] = l[3] + ',' + submission_file
+                l.append(submission_file)
         if score > 0 :
             if len(l) == 5 :
                 if len(l[4]) <= 0 :
@@ -91,3 +96,10 @@ def convertFloat(s):
         return ret
     else :
         return ret
+
+# バッチ情報ファイル書き込み
+def writeProgressInfo(s) :
+    progressinfo_path = os.path.join(WORKDIR, 'progressinfo.txt')
+    d = datetime.datetime.strftime(datetime.datetime.now(), '[%Y/%m/%d %H:%M:%S] ')
+    with open(progressinfo_path, mode='a') as f :
+        f.write(d + s + '\n')

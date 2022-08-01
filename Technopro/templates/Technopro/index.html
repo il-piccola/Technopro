@@ -67,6 +67,22 @@
                         <button type="submit" name="btn_index" class="btn btn-primary btn-sm">座標計算</button>
                     {% endif %}
                     </div>
+                    {% if post > 0 %}
+                    <div class="col-auto">
+                        {% with ""|center:5 as range %}
+                        {% for i in range %}
+                        {% if post == forloop.counter|add:"1" %}
+                            <span class="blink">{{ i }}</span>
+                        {% else %}
+                            {{ i }}now
+                        {% endif %}
+                            {% if forloop.counter < 5 %}
+                            -
+                            {% endif %}
+                        {% endfor %}
+                        {% endwith %}
+                    </div>
+                    {% endif %}
                     </div>
                     {% if progress > 0 %}
                         <div class="progress">
@@ -79,7 +95,7 @@
                         座標計算結果：{{ result.2 }}N　{{ result.3 }}E<br>
                         SIGNATEスコア：{{ result.1 }}
                     {% endif %}
-                </form>
+                    </form>
                 {% endif %}
             </section>
             <section class="flex-child-section">
