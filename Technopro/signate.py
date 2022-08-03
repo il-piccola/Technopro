@@ -1,7 +1,7 @@
 import os
 import datetime
 import pandas as pd
-from subprocess import Popen, PIPE
+from subprocess import run, PIPE
 from time import sleep
 from bs4 import BeautifulSoup
 from selenium import webdriver
@@ -19,18 +19,20 @@ def getSignateResult(timestr) :
     soup = getSoup(driver)
     row = getRow(soup)
     newtimestr = getTime(row)
-    score = 0
     writeProgress(i)
     print('time:', timestr, newtimestr, i)
     while timestr == newtimestr :
-        i = i + 0.3
+        # sleep(10)
+        sleep(1)
+        i = i + 10
+        soup = getSoup(driver)
         row = getRow(soup)
         newtimestr = getTime(row)
         writeProgress(i)
         print('time:', timestr, newtimestr, i)
-        sleep(10)
-        soup = getSoup(driver)
-        score = getScore(row)
+        if i >= 80 :    # テストコード
+            break
+    score = getScore(row)
     writeProgress(80, score=score)
     return score, newtimestr
 
@@ -73,11 +75,13 @@ def getScore(row) :
     return f
 
 # アップロードファイルをSIGNATEに投稿
-def submitSignate(timestr_now) :
-    submission_path = os.path.join(WORKDIR, SUBMISSION_FILE)
+def submitSignate() :
+    submission_file = getSubmissionFile()
+    submission_path = os.path.join(WORKDIR, submission_file)
+    print(submission_path)
     df_in = pd.read_csv(submission_path, names=('index', 'n', 'e'))
     df_out = makeSubmissionDF(df_in)
-    submission_out = makeSubmissionFile(df_out, timestr_now)
+    submission_out = makeSubmissionFile(df_out)
     submission_out = 'submission_titanic01.tsv'    # タイタニック投稿ファイル
     submitFile(submission_out)
     return
@@ -89,7 +93,8 @@ def makeSubmissionDF(df_in) :
     return df_out
 
 # SIGNATE投稿ファイルを作成
-def makeSubmissionFile(df_out, timestr_now) :
+def makeSubmissionFile(df_out) :
+    timestr_now = datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d%H%M%S')
     basename = os.path.splitext(os.path.basename(SUBMISSION_FILE))[0]
     submission_out = timestr_now + '_' + basename + '.csv'
     outfile_path = os.path.join(WORKDIR, submission_out)
@@ -99,11 +104,11 @@ def makeSubmissionFile(df_out, timestr_now) :
 
 # SIGNATEに投稿
 def submitFile(submission_out) :
-    writeProgress(98)
     outfile_path = os.path.join(WORKDIR, submission_out)
     submit_com = 'signate submit --competition-id=' + str(COMPETITION_ID) + ' ' + outfile_path
-    proc = Popen(submit_com, shell=True, stdout=PIPE, stderr=PIPE, text=True)
-    writeProgressInfo(str(proc))
+    writeProgressInfo(submit_com)
+    # proc = run(submit_com, shell=True, stdout=PIPE, stderr=PIPE, text=True)
+    # writeProgressInfo(str(proc.stdout))
     writeProgress(99)
     return
 
@@ -137,12 +142,9 @@ timestr = ''
 
 score, timestr = getSignateResult(timestr)
 for i in range(5) :
-    timestr_now = datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d%H%M%S')
-    writeProgress(89)
-    submitSignate(timestr_now)
+    submitSignate()
     writeProgress(1, post=i+1)
     score, timestr = getSignateResult(timestr)
 
 writeBestScore(score)
 writeWplistfin()
-

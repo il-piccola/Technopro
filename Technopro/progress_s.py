@@ -32,7 +32,7 @@ def getPostNum() :
 
 # 最新投稿ファイル名取得
 def getSubmissionFile() :
-    ret = ''
+    ret = SUBMISSION_FILE
     l = readProgress()
     if len(l) >= 4 :
         ret = l[3].split(',')[-1]
