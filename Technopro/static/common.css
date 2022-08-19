@@ -147,7 +147,7 @@
 
     .flex-box {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         justify-content: space-around;
         flex-wrap: wrap;
     }
@@ -165,7 +165,7 @@
     }
 
     .flex-child-aside {
-        flex: 1;
+        flex: 1 0 20%;
         padding:  10px;
     }
     
@@ -186,12 +186,12 @@
     }
 
     .flex-child-section:nth-child(1) {
-        flex: 2;
+        flex: 2 0 60%;
         padding:  10px;
     }
 
     .flex-child-section:nth-child(2) {
-        flex: 3;
+        flex: 3 0 20%;
         padding:  10px;
     }
     
@@ -317,6 +317,13 @@
         main {
             width: 88%
         }
+
+        .flex-box {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
     }
     
     /* 横幅1024px以上で読み込む */
@@ -330,6 +337,13 @@
         /* メインコンテンツ */
         main {
             width: 93%;
+        }
+
+        .flex-box {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            flex-wrap: wrap;
         }
     }
 </style>
