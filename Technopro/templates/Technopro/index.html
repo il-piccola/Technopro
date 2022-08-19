@@ -71,7 +71,7 @@
                     <div class="col-auto">
                         {% with ""|center:5 as range %}
                         {% for _ in range %}
-                        {% if post == forloop.counter %}
+                        {% if post == forloop.counter and progress < 100 %}
                             <span class="blink">{{ forloop.counter }}</span>
                         {% else %}
                             {{ forloop.counter }}
