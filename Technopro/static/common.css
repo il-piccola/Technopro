@@ -304,6 +304,14 @@
             top: 0;
         }
     }
+
+    .blink {
+        animation: blinkAnime 1s infinite alternate;
+    }
+    @keyframes blinkAnime{
+        0% { color: #ffff00 }
+        100% { color: #0000ff }
+    }
     
     /* 横幅768px以上で読み込む */
     @media screen and (min-width:768px) {

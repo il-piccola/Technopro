@@ -70,11 +70,11 @@
                     {% if post > 0 %}
                     <div class="col-auto">
                         {% with ""|center:5 as range %}
-                        {% for i in range %}
-                        {% if post == forloop.counter|add:"1" %}
-                            <span class="blink">{{ i }}</span>
+                        {% for _ in range %}
+                        {% if post == forloop.counter %}
+                            <span class="blink">{{ forloop.counter }}</span>
                         {% else %}
-                            {{ i }}now
+                            {{ forloop.counter }}
                         {% endif %}
                             {% if forloop.counter < 5 %}
                             -

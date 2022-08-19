@@ -1,4 +1,5 @@
 import os
+import shutil
 import datetime
 import pandas as pd
 from subprocess import run, PIPE
@@ -78,7 +79,6 @@ def getScore(row) :
 def submitSignate() :
     submission_file = getSubmissionFile()
     submission_path = os.path.join(WORKDIR, submission_file)
-    print(submission_path)
     df_in = pd.read_csv(submission_path, names=('index', 'n', 'e'))
     df_out = makeSubmissionDF(df_in)
     submission_out = makeSubmissionFile(df_out)
@@ -120,10 +120,32 @@ def writeBestScore(score) :
         with open(bestscore_path) as f :
             s = f.read()
             bestscore = convertFloat(s)
+    ret = bestscore
     if score > bestscore :
         with open(bestscore_path, mode='w') as f :
             f.write(str(score))
-    return
+        ret = score
+    return ret
+
+# 基準投稿ファイル更新
+def copySubmissionFile(basetimestr) :
+    basename = os.path.splitext(os.path.basename(SUBMISSION_FILE))[0]
+    backup_file = basename + '_bak_' + basetimestr + '.csv'
+    print(backup_file)
+    shutil.move(os.path.join(WORKDIR, SUBMISSION_FILE), os.path.join(BACKUPDIR, backup_file))
+    shutil.copy2(os.path.join(WORKDIR, getSubmissionFile()), os.path.join(WORKDIR, SUBMISSION_FILE))
+
+# 投稿ファイルバックアップ
+def backupSubmissionFile(basetimestr) :
+    backup_dir = os.path.join(BACKUPDIR, basetimestr)
+    os.makedirs(backup_dir, exist_ok=True)
+    submission_list = getSubmissionFiles()
+    for file in submission_list :
+        if file != SUBMISSION_FILE :
+            filepath = os.path.join(WORKDIR, file)
+            if os.path.exists(filepath) :
+                shutil.move(filepath, backup_dir)
+    return backup_dir
 
 # 検索完了リストファイル更新
 def writeWplistfin() :
@@ -132,13 +154,14 @@ def writeWplistfin() :
     if os.path.exists(wplistfin_path) :
         with open(wplistfin_path) as f :
             for line in f :
-                wplist.append(line)
+                wplist.append(line.strip())
     with open(wplistfin_path, mode='w') as f :
         f.write('\n'.join(wplist))
     return
 
 score = 0
 timestr = ''
+basetimestr = datetime.datetime.strftime(datetime.datetime.now(), '%Y%m%d%H%M%S')
 
 score, timestr = getSignateResult(timestr)
 for i in range(5) :
@@ -146,5 +169,10 @@ for i in range(5) :
     writeProgress(1, post=i+1)
     score, timestr = getSignateResult(timestr)
 
-writeBestScore(score)
+bestscore =  writeBestScore(score)
 writeWplistfin()
+if bestscore >= score :
+    copySubmissionFile(basetimestr)
+backup_dir = backupSubmissionFile(basetimestr)
+
+writeProgress(100, backup_dir=backup_dir)

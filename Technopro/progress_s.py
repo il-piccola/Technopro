@@ -5,6 +5,7 @@ from decimal import Decimal
 from settings import *
 
 progress_path = os.path.join(WORKDIR, PROGRESS_FILE)
+progressinfo_path = os.path.join(WORKDIR, PROGRESSINFO_FILE)
 
 # ウェイポイント名取得
 def getProgressName() :
@@ -30,12 +31,24 @@ def getPostNum() :
         ret = int(l[2])
     return ret
 
-# 最新投稿ファイル名取得
-def getSubmissionFile() :
+# 投稿ファイルリスト取得
+def getSubmissionFiles() :
     ret = SUBMISSION_FILE
     l = readProgress()
     if len(l) >= 4 :
-        ret = l[3].split(',')[-1]
+        ret = l[3].split(',')
+    return ret
+
+# 最新投稿ファイル名取得
+def getSubmissionFile() :
+    return getSubmissionFiles()[-1]
+
+# バックアップディレクトリパス取得
+def getBackupDir() :
+    ret = ''
+    l = readProgress()
+    if len(l) >= 6 :
+        ret = l[5]
     return ret
 
 # 進捗ファイル読込
@@ -47,7 +60,7 @@ def readProgress() :
     return ret
 
 # 進捗ファイル更新
-def writeProgress(n, name='', post=0, submission_file='', score=0) :
+def writeProgress(n, name='', post=0, submission_file='', score=0, backup_dir='') :
     l = readProgress()
     if len(l) <= 0 :
         l = []
@@ -70,23 +83,30 @@ def writeProgress(n, name='', post=0, submission_file='', score=0) :
             else :
                 l.append(submission_file)
         if score > 0 :
-            if len(l) == 5 :
+            if len(l) >= 5 :
                 if len(l[4]) <= 0 :
                     l[4] = str(score)
                 else :
                     l[4] = l[4] + ',' + str(score)
-            elif len(l) == 4 :
+            else :
                 l.append(str(score))
+        if backup_dir != '' :
+            if len(l) >= 6 :
+                l[5] = backup_dir
+            else :
+                l.append(backup_dir)
     with open(progress_path, mode='w') as f :
         f.write('\n'.join(l))
     return
 
-# 進捗ファイル削除
-def deleteProgress() :
-    if os.path.exists(progress_path) :
-        backup_file = getProgressName() + '_' + PROGRESS_FILE
-        backup_path = os.path.join(WORKDIR, backup_file)
-        shutil.move(progress_path, backup_path)
+# 進捗ファイルバックアップ
+def backupProgress() :
+    backup_dir = getBackupDir()
+    if os.path.exists(backup_dir) :
+        if os.path.exists(progress_path) :
+            shutil.move(progress_path, backup_dir)
+        if os.path.exists(progressinfo_path) :
+            shutil.move(progressinfo_path, backup_dir)
 
 def convertFloat(s):
     ret = -1
@@ -99,7 +119,6 @@ def convertFloat(s):
 
 # バッチ情報ファイル書き込み
 def writeProgressInfo(s) :
-    progressinfo_path = os.path.join(WORKDIR, 'progressinfo.txt')
     d = datetime.datetime.strftime(datetime.datetime.now(), '[%Y/%m/%d %H:%M:%S] ')
     with open(progressinfo_path, mode='a') as f :
         f.write(d + s + '\n')

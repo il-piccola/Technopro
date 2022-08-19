@@ -178,11 +178,18 @@ NE_D = [32.5, 145.0]
 WORKDIR = os.path.join(DIR, "work")
 os.makedirs(WORKDIR, exist_ok=True)
 
+# バックアップディレクトリパス
+BACKUPDIR = os.path.join(WORKDIR, "back")
+os.makedirs(BACKUPDIR, exist_ok=True)
+
 # 投稿ファイル行対応ウェイポイントファイル名
 WAYPOINT_FILE = "waypoint.csv"
 
 # 作業進捗ファイル名
 PROGRESS_FILE = "progress.txt"
+
+# バッチ情報ファイル名
+PROGRESSINFO_FILE = "progressinfo.txt"
 
 # ベストスコアファイル名
 BESTSCORE_FILE = "bestscore.txt"

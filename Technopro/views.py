@@ -38,11 +38,11 @@ def index(request) :
         params['msg'] = '【' + name + '】の座標計算処理が完了しました'
         params['anime'] = 'progress-bar-striped'
         params['result'] = getWaypointFin(name=name)
-        deleteProgress()
         if request.POST :
             params['indexform'] = indexForm(data=request.POST)
         else :
             params['indexform'] = indexForm()
+        backupProgress()
     elif post <= 5 and progress > 0 :
         params['msg'] = '【' + name + '】の座標を計算中です、しばらくお待ちください'
         params['reload'] = True
@@ -61,7 +61,7 @@ def index(request) :
                     params['msg'] = '【' + name + '】の座標計算処理は完了しています'
                     params['anime'] = 'progress-bar-striped'
                     params['result'] = getWaypointFin(name=name)
-                    deleteProgress()
+                    backupProgress()
                 else :
                     params['msg'] = '【' + name + '】の座標を計算中です、しばらくお待ちください'
                     params['reload'] = True
