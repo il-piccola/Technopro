@@ -43,6 +43,14 @@ def getSubmissionFiles() :
 def getSubmissionFile() :
     return getSubmissionFiles()[-1]
 
+# スコアリスト取得
+def getScoreList() :
+    ret = []
+    l = readProgress()
+    if len(l) >= 5 :
+        ret = list(map(convertFloat, l[4].split(',')))
+    return ret
+
 # バックアップディレクトリパス取得
 def getBackupDir() :
     ret = ''

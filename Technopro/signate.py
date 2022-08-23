@@ -10,6 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from settings import *
 from progress_s import *
+from angle import *
 
 # SIGNATEの投稿結果を取得
 def getSignateResult(timestr) :
@@ -31,8 +32,10 @@ def getSignateResult(timestr) :
         newtimestr = getTime(row)
         writeProgress(i)
         print('time:', timestr, newtimestr, i)
-        if i >= 80 :    # テストコード
+        # ↓テストコード↓
+        if i >= 80 :
             break
+        # ↑テストコード↑
     score = getScore(row)
     writeProgress(80, score=score)
     return score, newtimestr
@@ -88,9 +91,74 @@ def submitSignate() :
 
 # 投稿ファイルの編集
 def makeSubmissionDF(df_in) :
+    waypoint_path = os.path.join(WORKDIR, WAYPOINT_FILE)
+    df_wp = pd.read_csv(waypoint_path, names=('index', 'name'))
+    index = df_wp[df_wp['name'] == getProgressName()].iat[0, 0]
     df_out = df_in.copy()
+    post_num = getPostNum()
+    score_list = getScoreList()
+    # 各進捗フェーズの作業
+    if post_num == 1 :
+        # 求めたいWPの値を基準A(N37.5, E125.0)に設定
+        df_out[df_out['index'] == index].iat[0, 1] = NE_A[0]
+        df_out[df_out['index'] == index].iat[0, 2] = NE_A[1]
+    elif post_num == 2 :
+        # 基準Aの緯度を0.1ずらす(N37.6)
+        df_out[df_out['index'] == index].iat[0, 1] = NE_A[0] + 0.1
+        df_out[df_out['index'] == index].iat[0, 2] = NE_A[1]
+    elif post_num == 3 :
+        # 2点目の基準を選定
+        c, l = get_second_standard(score_list[1], score_list[2])
+        # 求めたいWPの値を基準に設定
+        df_out[df_out['index'] == index].iat[0, 1] = l[0]
+        df_out[df_out['index'] == index].iat[0, 2] = l[1]
+    elif post_num == 4 :
+        # 2点目の基準を選定
+        c, l = get_second_standard(score_list[1], score_list[2])
+        # 緯度を0.1ずらす(N37.6)
+        df_out[df_out['index'] == index].iat[0, 1] = l[0] + 0.1
+        df_out[df_out['index'] == index].iat[0, 2] = l[1]
+    elif post_num == 5 :
+        # 基準1(基準A)の角度を求める
+        angle_1 = get_angle('A', score_list[1], score_list[2])
+        # 2点目の基準を選定
+        c, l = get_second_standard(score_list[1], score_list[2])
+        # 基準2の角度を求める
+        angle_2 = get_angle(c, score_list[3], score_list[4])
+        # 2点の基準の角度からWPの座標を求める
+        X, Y = find_wp_from_stAngle("A", angle_1, c, angle_2)
+        df_out[df_out['index'] == index].iat[0, 1] = Y
+        df_out[df_out['index'] == index].iat[0, 2] = X
     writeProgress(90)
     return df_out
+
+# 2点目の基準を選定
+def get_second_standard(score1, score2) :
+    # 基準Aからの角度を求める
+    angle = get_angle('A', score1, score2)
+    # 基準Aの角度から2点目の基準を選定
+    c = 'C'
+    l = NE_C
+    if angle >= 0 and angle <= 20 :
+        c = 'D'
+        l = NE_D
+    return c, l
+
+# 角度を求める
+def get_angle(c, score1, score2) :
+    # 2回の投稿結果の差分Δdを求める
+    delta_d = score2 - score1
+    # Δdの値より角度を求める
+    angle = None
+    if c == 'A' :
+        angle = find_wp_A_angle(delta_d)
+    elif c == 'B' :
+        angle = find_wp_B_angle(delta_d)
+    elif c == 'C' :
+        angle = find_wp_C_angle(delta_d)
+    elif c == 'D' :
+        angle = find_wp_D_angle(delta_d)
+    return angle
 
 # SIGNATE投稿ファイルを作成
 def makeSubmissionFile(df_out) :
